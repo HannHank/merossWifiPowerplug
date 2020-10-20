@@ -12,6 +12,8 @@ EMAIL = os.getenv('EMAIL')
 PASSWORD = os.getenv('PASSWORD')
 myMacAdresses = os.getenv('MACADRESSES')
 
+interface = "wlp5s0" # you need to adapt this
+
 print("EMail",EMAIL)
 
 async def main():
@@ -26,7 +28,7 @@ async def main():
     await manager.async_device_discovery()
     plugs = manager.find_devices(device_type="mss210")
     # Setup the HTTP client API from user-password
-    pid = Popen(["arp-scan","--interface=wlp5s0", "--localnet"], stdout=PIPE)
+    pid = Popen(["arp-scan","--interface=" + interface, "--localnet"], stdout=PIPE)
     s = str(pid.communicate()[0])
     p = re.compile(r'(?:[0-9a-fA-F]:?){12}')
     scannedMac = re.findall(p, s)
