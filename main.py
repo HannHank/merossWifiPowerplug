@@ -28,12 +28,8 @@ async def main():
     await manager.async_device_discovery()
     plugs = manager.find_devices(device_type="mss210")
     # Setup the HTTP client API from user-password
-    pid = Popen(["arp-scan","--interface=" + interface, "--localnet"], stdout=PIPE)
-    s = str(pid.communicate()[0])
-    p = re.compile(r'(?:[0-9a-fA-F]:?){12}')
-    scannedMac = re.findall(p, s)
-    print("must have: ", myMacAdresses)
-    print("mac", scannedMac)
+  
+    
     if len(plugs) < 1:
         print("No MSS310 plugs found...")
     else:
@@ -43,12 +39,22 @@ async def main():
         
         # The first time we play with a device, we must update its status
         await dev.async_update()
-        if any( i for i in scannedMac if i in myMacAdresses):
-        # We can now start playing with that
-            print(f"Turning on {dev.name}...")
-            await dev.async_turn_on(channel=0)
+        for x in range(200):
+            pid = Popen(["arp-scan","--interface=" + interface, "--localnet"], stdout=PIPE)
+            s = str(pid.communicate()[0])
+            p = re.compile(r'(?:[0-9a-fA-F]:?){12}')
+            scannedMac = re.findall(p, s)
+            print("must have: ", myMacAdresses)
+            print("mac", scannedMac)
+
+            if any( i for i in scannedMac if i in myMacAdresses):
+            # We can now start playing with that
+                print(f"Turning on {dev.name}...")
+                await dev.async_turn_on(channel=0)
+                break
+            asyncio.sleep(5)
            
-        else:
+        if x > 100:
             print(f"Turing off {dev.name}")
             await dev.async_turn_off(channel=0)
 
