@@ -52,7 +52,7 @@ async def main():
                 print(f"Turning on {dev.name}...")
                 await dev.async_turn_on(channel=0)
                 break
-            asyncio.sleep(5)
+            await asyncio.sleep(5)
            
         if x > 100:
             print(f"Turing off {dev.name}")
