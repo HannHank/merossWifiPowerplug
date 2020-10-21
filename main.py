@@ -50,7 +50,6 @@ async def main():
         # We can now start playing with that
             print(f"Turning on {dev.name}...")
             await dev.async_turn_on(channel=0)
-            break
         else:
             print(f"Turing off {dev.name}")
             await dev.async_turn_off(channel=0)
