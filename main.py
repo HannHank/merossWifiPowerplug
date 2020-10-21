@@ -39,14 +39,16 @@ async def main():
         
         # The first time we play with a device, we must update its status
         await dev.async_update()
-        pid = Popen(["arp-scan","--interface=" + interface, "--localnet", "-r 10"], stdout=PIPE)
+        #pid = Popen(["arp-scan","--interface=" + interface, "--localnet", "-r 10"], stdout=PIPE) 
+        # need to be adapted to your bandwith 192.168.178.*
+        pid = Popen(["nmap",  "-sP", "-PE", "-PA21,23,80,3389","192.168.178.*"], stdout=PIPE)
         s = str(pid.communicate()[0])
         p = re.compile(r'(?:[0-9a-fA-F]:?){12}')
         scannedMac = re.findall(p, s)
         print("must have: ", myMacAdresses)
         print("mac", scannedMac)
 
-        if any( i for i in scannedMac if i in myMacAdresses):
+        if any( i for i in scannedMac if i.lower() in myMacAdresses):
         # We can now start playing with that
             print(f"Turning on {dev.name}...")
             await dev.async_turn_on(channel=0)
