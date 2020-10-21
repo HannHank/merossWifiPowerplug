@@ -39,8 +39,8 @@ async def main():
         
         # The first time we play with a device, we must update its status
         await dev.async_update()
-        for x in range(200):
-            pid = Popen(["arp-scan","--interface=" + interface, "--localnet"], stdout=PIPE)
+        for x in range(1):
+            pid = Popen(["arp-scan","--interface=" + interface, "--localnet", "-r 10"], stdout=PIPE)
             s = str(pid.communicate()[0])
             p = re.compile(r'(?:[0-9a-fA-F]:?){12}')
             scannedMac = re.findall(p, s)
