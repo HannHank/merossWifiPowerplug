@@ -39,25 +39,23 @@ async def main():
         
         # The first time we play with a device, we must update its status
         await dev.async_update()
-        for x in range(1):
-            pid = Popen(["arp-scan","--interface=" + interface, "--localnet", "-r 10"], stdout=PIPE)
-            s = str(pid.communicate()[0])
-            p = re.compile(r'(?:[0-9a-fA-F]:?){12}')
-            scannedMac = re.findall(p, s)
-            print("must have: ", myMacAdresses)
-            print("mac", scannedMac)
+        pid = Popen(["arp-scan","--interface=" + interface, "--localnet", "-r 10"], stdout=PIPE)
+        s = str(pid.communicate()[0])
+        p = re.compile(r'(?:[0-9a-fA-F]:?){12}')
+        scannedMac = re.findall(p, s)
+        print("must have: ", myMacAdresses)
+        print("mac", scannedMac)
 
-            if any( i for i in scannedMac if i in myMacAdresses):
-            # We can now start playing with that
-                print(f"Turning on {dev.name}...")
-                await dev.async_turn_on(channel=0)
-                break
-            await asyncio.sleep(5)
-           
-        if x > 100:
+        if any( i for i in scannedMac if i in myMacAdresses):
+        # We can now start playing with that
+            print(f"Turning on {dev.name}...")
+            await dev.async_turn_on(channel=0)
+            break
+        else:
             print(f"Turing off {dev.name}")
             await dev.async_turn_off(channel=0)
 
+    # await asyncio.sleep(5)
     # Close the manager and logout from http_api
     manager.close()
     await http_api_client.async_logout()
