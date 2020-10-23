@@ -59,7 +59,7 @@ async def main():
         #     print(f"Turing off {dev.name}")
         #     await dev.async_turn_off(channel=0)
 
-        for x in range(5):
+        for x in range(20):
             status, pid = getstatusoutput("fping -6 -I" + interface + " " + myIPV6)
             print("status:",pid)
             if "is alive" in pid:
@@ -68,8 +68,7 @@ async def main():
                 await dev.async_turn_on(channel=0)
                 break
             await asyncio.sleep(5)
-           
-        if x > 5:
+        if x >= 19:
             print(f"Turing off {dev.name}")
             await dev.async_turn_off(channel=0)
        
